@@ -3,28 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juntos Encajamos</title>
+    <title>Propuesta Especial</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         body, html {
             height: 100vh;
             margin: 0;
+            background-color: #ffe6e6;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            background-color: #ffe6e6;
-            overflow: hidden;
+            text-align: center;
         }
-        h1 {
-            color: #ff4d4d;
-            margin-bottom: 20px;
-        }
+        .hidden { display: none; }
+
+        /* PUZZLE */
         .puzzle-container {
             display: grid;
             grid-template-columns: repeat(3, 100px);
             grid-template-rows: repeat(3, 100px);
             gap: 5px;
+            margin: auto;
         }
         .puzzle-piece {
             width: 100px;
@@ -32,70 +32,126 @@
             background-size: 300px 300px;
             cursor: pointer;
             border: 1px solid #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 20px;
-            color: white;
-            text-shadow: 1px 1px 2px black;
         }
-        .selected {
-            border: 3px solid red;
+        .selected { border: 3px solid red !important; }
+
+        button {
+            margin-top: 30px;
         }
     </style>
 </head>
 <body>
-    <h1>Juntos Encajamos</h1>
-    <div class="puzzle-container" id="puzzleContainer"></div>
-    
-    <script>
-        const imageUrl = './image.jpg';
-        let positions = [0,1,2,3,4,5,6,7,8].sort(() => Math.random() - 0.5);
-        let selectedPiece = null;
 
-        function createPuzzle() {
-            const container = document.getElementById("puzzleContainer");
-            container.innerHTML = '';
-            positions.forEach((pos, index) => {
-                const piece = document.createElement("div");
-                piece.classList.add("puzzle-piece");
-                piece.style.backgroundImage = `url(${imageUrl})`;
-                piece.style.backgroundPosition = `-${(pos % 3) * 100}px -${Math.floor(pos / 3) * 100}px`;
-                piece.setAttribute("data-index", index);
-                piece.onclick = () => selectPiece(index, piece);
-                container.appendChild(piece);
-            });
-        }
-        
-        function selectPiece(index, piece) {
-            if (selectedPiece === null) {
-                selectedPiece = { index, element: piece };
-                piece.classList.add("selected");
-            } else {
-                swapPieces(selectedPiece.index, index);
-                selectedPiece.element.classList.remove("selected");
-                selectedPiece = null;
-            }
-        }
-        
-        function swapPieces(index1, index2) {
-            [positions[index1], positions[index2]] = [positions[index2], positions[index1]];
-            createPuzzle();
-            checkWin();
-        }
-        
-        function checkWin() {
-            if (positions.every((pos, i) => pos === i)) {
-                document.body.innerHTML = '<h1 class="text-center text-danger">Chiii, lo lograste amorcito.<br>Ves que juntitos encajamos y nos vemos croquetos. Estamos hechos para estar juntitos y amarnos muchito, te amo muchito, mil ocho mil millones.<br>Mi princesita hermosa, ¿quieres pasar este día juntitos para darnos amorcito?</h1><button class="btn btn-danger mt-3" onclick="showCompleteImage()">Chi quiero</button><div id="completeImage" style="display:none; margin-top:20px;"><img src="'+imageUrl+'" alt="Rompecabezas Completo" style="width:300px; height:300px;"></div>';
-            }
-        }
-        
-        createPuzzle();
-    function showCompleteImage() {
-        document.getElementById("completeImage").style.display = "block";
+<!-- ==========================
+     PANTALLA 1: ROMPECABEZAS
+============================== -->
+<div id="screen1">
+    <h1 class="text-danger">Juntos Encajamos</h1>
+    <p>Arma el rompecabezas para descubrir algo bonito...</p>
+    <div class="puzzle-container" id="puzzleContainer"></div>
+</div>
+
+<!-- ==========================
+     PANTALLA 2: MENSAJE
+============================== -->
+<div id="screen2" class="hidden container">
+    <h1 class="text-danger">Mensaje para ti ❤️</h1>
+    <p id="mensaje1">
+        Aquí puedes poner tu mensaje largo y romántico...  
+        Escribe lo que quieras expresarle después de resolver el rompecabezas.
+    </p>
+
+    <button class="btn btn-danger" onclick="nextScreen(3)">Siguiente ➜</button>
+</div>
+
+<!-- ==========================
+     PANTALLA 3: MÚSICA
+============================== -->
+<div id="screen3" class="hidden container">
+    <h1 class="text-danger">Una canción para ti 🎵</h1>
+    <audio controls>
+        <source src="tu_cancion.mp3" type="audio/mp3">
+        Tu navegador no soporta audio.
+    </audio>
+
+    <div class="mt-4">
+        <button class="btn btn-secondary" onclick="nextScreen(2)">⬅ Regresar</button>
+        <button class="btn btn-danger" onclick="nextScreen(4)">Siguiente ➜</button>
+    </div>
+</div>
+
+<!-- ==========================
+     PANTALLA 4: MENSAJE FINAL
+============================== -->
+<div id="screen4" class="hidden container">
+    <h1 class="text-danger">Lo Último... 🌹</h1>
+    <p id="mensaje2">
+        Aquí va tu mensaje final para preguntarle si quiere ser tu novia.  
+        Hazlo muy bonito, esta es la parte importante ❤️
+    </p>
+
+    <button class="btn btn-secondary" onclick="nextScreen(3)">⬅ Regresar</button>
+</div>
+
+<!-- ==========================
+     SCRIPT GENERAL
+============================== -->
+<script>
+/* ======================
+   NAVEGACIÓN ENTRE PANTALLAS
+======================== */
+function nextScreen(n) {
+    document.querySelectorAll("div[id^='screen']").forEach(s => s.classList.add("hidden"));
+    document.getElementById("screen" + n).classList.remove("hidden");
+}
+
+/* ======================
+   ROMPECABEZAS
+======================== */
+const imageUrl = "image.jpg";
+let positions = [0,1,2,3,4,5,6,7,8].sort(() => Math.random() - 0.5);
+let selectedPiece = null;
+
+function createPuzzle() {
+    const container = document.getElementById("puzzleContainer");
+    container.innerHTML = '';
+
+    positions.forEach((pos, index) => {
+        const piece = document.createElement("div");
+        piece.classList.add("puzzle-piece");
+        piece.style.backgroundImage = `url(${imageUrl})`;
+        piece.style.backgroundPosition = `-${(pos % 3) * 100}px -${Math.floor(pos / 3) * 100}px`;
+
+        piece.onclick = () => selectPiece(index, piece);
+        container.appendChild(piece);
+    });
+}
+
+function selectPiece(index, element) {
+    if (selectedPiece === null) {
+        selectedPiece = { index, element };
+        element.classList.add("selected");
+    } else {
+        swapPieces(selectedPiece.index, index);
+        selectedPiece.element.classList.remove("selected");
+        selectedPiece = null;
+        checkWin();
     }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+}
+
+function swapPieces(i1, i2) {
+    [positions[i1], positions[i2]] = [positions[i2], positions[i1]];
+    createPuzzle();
+}
+
+function checkWin() {
+    if (positions.every((p, i) => p === i)) {
+        nextScreen(2);
+    }
+}
+
+createPuzzle();
+</script>
+
 </body>
 </html>
